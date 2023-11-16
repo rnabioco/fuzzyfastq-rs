@@ -87,13 +87,11 @@ fn process_fastq_file(path: &Path, sequences: &mut HashMap<String, SequenceInfo>
     };
 
     let parser = Parser::new(box_reader);
-    println!("Processing file: {:?}", path.file_name().unwrap());
     let mut total_reads = 0;
 
     let result = parser.each(|record| {
         total_reads += 1;
         let read = String::from_utf8_lossy(record.seq()).to_uppercase();
-        println!("Sequence: {}", read);
 
         for seq_info in sequences.values_mut() {
             if is_match(&read, &seq_info.sequence, mismatch_percentage) {
