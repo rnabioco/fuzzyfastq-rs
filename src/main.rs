@@ -6,7 +6,7 @@ use std::collections::HashMap;
 use std::time::Instant;
 use fastq::{Parser, Record};
 use csv::Reader;
-use flate2::read::GzDecoder;
+use flate2::read::MultiGzDecoder;
 
 struct SequenceInfo {
     name: String,
@@ -81,17 +81,19 @@ fn process_fastq_file(path: &Path, sequences: &mut HashMap<String, SequenceInfo>
     let file_ext = path.extension().and_then(std::ffi::OsStr::to_str).unwrap_or_default();
     
     let box_reader: Box<dyn Read> = if file_ext == "gz" {
-        Box::new(BufReader::new(GzDecoder::new(file)))
+        Box::new(BufReader::new(MultiGzDecoder::new(file)))
     } else {
         Box::new(BufReader::new(file))
     };
 
     let parser = Parser::new(box_reader);
+    println!("Processing file: {:?}", path.file_name().unwrap());
     let mut total_reads = 0;
 
     let result = parser.each(|record| {
         total_reads += 1;
         let read = String::from_utf8_lossy(record.seq()).to_uppercase();
+        println!("Sequence: {}", read);
 
         for seq_info in sequences.values_mut() {
             if is_match(&read, &seq_info.sequence, mismatch_percentage) {
