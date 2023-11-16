@@ -23,19 +23,20 @@ Efficient processing suitable for bioinformatics data analysis.
 
 The tool accepts the following command line arguments:
 
-Mode (--seq or --csv): Specifies the mode of operation.
+* Mode (--seq or --csv): Specifies the mode of operation.
 --seq: Directly use a provided sequence.
 --csv: Use sequences from a specified CSV file.  
 
-Sequence or Path to CSV File: Depending on the mode, provide either a nucleotide sequence or the path to a CSV file containing sequences.  
+* Sequence or Path to CSV File: Depending on the mode, provide either a nucleotide sequence or the path to a CSV file containing sequences.  
 
-FASTQ Directory: Path to the directory containing FASTQ files. 
+* FASTQ Directory: Path to the directory containing FASTQ files. 
 Input as FASTQ files (.fastq, .fq, .fastq.gz, or .fq.gz formats). 
 
-Mismatch Percentage (optional): The allowable mismatch percentage as a decimal (e.g., 0.1 for 10% mismatches). Defaults to 0 if not provided.
+* Mismatch Percentage (optional): The allowable mismatch percentage as a decimal (e.g., 0.1 for 10% mismatches). Defaults to 0 if not provided.
 
 
 ### CSV format
-`#Name, Sequence`
-`Barcode01,ATGCTACGCTAGCTACGTCAGTCGAT`
-`Barcode02,TGCTCGCTAGTCGCATCGATCGATCG`
+
+`#Name, Sequence`  
+`Barcode01,ATGCTACGCTAGCTACGTCAGTCGAT`  
+`Barcode02,TGCTCGCTAGTCGCATCGATCGATCG`  
