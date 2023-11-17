@@ -113,7 +113,7 @@ fn process_fastq_file(path: &Path, sequences: &mut HashMap<String, SequenceInfo>
     for name in sequence_order.iter() {
         if let Some(seq_info) = sequences.get(name) {
             let percentage = (seq_info.count as f64 / total_reads as f64) * 100.0;
-            println!("{}, {}, {}. {:.2}%", seq_info.name, seq_info.sequence, seq_info.count, percentage);
+            println!("{},{},{},{:.2}%", seq_info.name, seq_info.sequence, seq_info.count, percentage);
         }
     }
 
