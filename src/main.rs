@@ -4,9 +4,15 @@ use std::io::{BufReader, Read};
 use std::path::Path;
 use std::collections::HashMap;
 use std::time::Instant;
+
 use fastq::{Parser, Record};
 use csv::Reader;
 use flate2::read::MultiGzDecoder;
+
+use charming::{Chart, ImageRenderer, ImageFormat};
+use charming::element::{NameLocation, AxisType, TextStyle, TextAlign};
+use charming::component::{Axis, Title};
+use charming::series::Bar;
 
 struct SequenceInfo {
     name: String,
@@ -120,9 +126,23 @@ fn process_fastq_file(path: &Path, sequences: &mut HashMap<String, SequenceInfo>
     let duration = start.elapsed();
     println!("\nTime taken for {:?}: {:?}\n", path.file_name().unwrap(), duration);
 
-    // Reset the counts for sequences after processing each file
-    for seq_info in sequences.values_mut() {
-        seq_info.count = 0;
+    // Create a chart of the results
+    let sequence_names: Vec<String> = sequences.keys().cloned().collect();
+    let percentages: Vec<f64> = sequences.values()
+        .map(|seq_info| (seq_info.count as f64 / total_reads as f64) * 100.0)
+        .collect();
+
+        let file_path = match path.to_str() {
+            Some(str_path) => format!("{}.png", str_path),
+            None => panic!("Invalid file path"),
+        };
+
+    chart(sequence_names, percentages, &file_path, &mismatch_percentage);
+
+        
+        // Reset the counts for sequences after processing each file
+        for seq_info in sequences.values_mut() {
+            seq_info.count = 0;
     }
 }
 
@@ -151,3 +171,41 @@ fn is_match(read: &str, sequence: &str, mismatch_percentage: f64) -> bool {
 
     false
 }
+
+pub fn chart(sequence_names: Vec<String>, percentages: Vec<f64>, file_path: &str, mismatch_percentage: &f64) {
+    println!("{:?} {:?} {}", sequence_names, percentages, file_path);
+    let chart = Chart::new()
+        .title(
+            Title::new()
+                .text(file_path.get(2..).unwrap().strip_suffix(".png").unwrap())
+                .text_style(TextStyle::new().font_size(28).color("#000000"))
+                .text_align(TextAlign::Auto)
+                .item_gap(-1)
+                .subtext("mismatch allowance: ".to_owned() + &mismatch_percentage.to_string())
+                .subtext_style(TextStyle::new().font_size(16).color("#000000"))
+            )
+        .x_axis(
+            Axis::new()
+                .type_(AxisType::Category)
+                .data(sequence_names)
+                .name("sequence name")
+                .name_gap(50)
+                .name_location(NameLocation::Center)
+
+            )
+        .y_axis(
+            Axis::new()
+                .type_(AxisType::Value)
+                .min(0.0)
+                .max(100.0)
+                .name_gap(50)
+                .name("match percentage (%)")
+                .name_location(NameLocation::Center)
+            )
+        .series(Bar::new().data(percentages))
+        .background_color("#ffffff"
+    );
+
+    let mut renderer = ImageRenderer::new(800, 600);
+    renderer.save_format(ImageFormat::Png, &chart, file_path).err();
+    }
