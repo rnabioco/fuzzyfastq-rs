@@ -11,7 +11,7 @@ Efficient processing suitable for bioinformatics data analysis.
 
 ## Installation
 
-`git clone https://github.com/MLKaufman/fastq-rs`  
+`git clone https://github.com/rnabioco/fastq-rs`  
 
 `cd fastq-rs`
 
