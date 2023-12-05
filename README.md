@@ -7,13 +7,12 @@ The fuzzyfastq is a command-line tool written in Rust to processes FASTQ files (
 Process standard and gzipped FASTQ files.
 Match sequences with an allowance for mismatches.
 Handle both direct sequence input and sequences provided in a CSV file.
-Efficient processing suitable for bioinformatics data analysis.
 
 ## Installation
 
-`git clone https://github.com/rnabioco/fastq-rs`  
+`git clone https://github.com/rnabioco/fuzzyfastq-rs`  
 
-`cd fastq-rs`
+`cd fuzzyfastq-rs`
 
 `cargo install --path .`
 
